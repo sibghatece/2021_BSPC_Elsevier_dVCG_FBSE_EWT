@@ -1,0 +1,75 @@
+clc
+clear all
+close all
+
+data=xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\dvcg paper\pca_12.xlsx');
+
+
+PMI=data(1995:end,:); % 
+HC=data(1:1994,:);
+
+for i=1:12
+P(i,:)=PMI(:,i);
+end
+Pm=P';
+
+for i=1:12
+H(i,:)=HC(:,i);
+end
+Hc=H';
+K=300
+P1=Pm(1:K,1);
+P2=Pm(1:K,2);
+P3=Pm(1:K,3);
+P4=Pm(1:K,4);
+P5=Pm(1:K,5);
+P6=Pm(1:K,6);
+P7=Pm(1:K,7);
+P8=Pm(1:K,8);
+P9=Pm(1:K,9);
+P10=Pm(1:K,10);
+P11=Pm(1:K,11);
+P12=Pm(1:K,12);
+H1=Hc(1:K,1);
+H2=Hc(1:K,2);
+H3=Hc(1:K,3);
+H4=Hc(1:K,4);
+H5=Hc(1:K,5);
+H6=Hc(1:K,6);
+H7=Hc(1:K,7);
+H8=Hc(1:K,8);
+H9=Hc(1:K,9);
+H10=Hc(1:K,10);
+H11=Hc(1:K,11);
+H12=Hc(1:K,12);
+
+
+
+figure(1)
+grid on;
+boxplot([P1 H1 P2 H2 P3 H3 P4 H4 P5 H5 P6 H6],'Notch','on','OutlierSize',0.000000001,'labels',{'F1(PMI)','F1(HC)','F2(PMI)','F2(HC)','F3(PMI)','F3(HC)','F4(PMI)','F4(HC)','F5(PMI)','F5(HC)',...
+    'F6(PMI)','F6(HC)'});  grid on;set(gca,'XTick',1:12,'FontSize',8);set(gca, 'YScale', 'log');
+ylabel('Log(Principal components)')
+
+
+figure(2)
+grid on;
+boxplot([ P7 H7 P8 H8 P9 H9 P10 H10 P11 H11 P12 H12],'Notch','on','OutlierSize',0.000000001,'labels',{'F7(PMI)','F7(HC)','F8(PMI)','F8(HC)','F9(PMI)','F9(HC)','F10(PMI)','F10(HC)','F11(PMI)','F11(HC)',...
+    'F12(PMI)','F12(HC)'});  grid on;set(gca,'XTick',1:12,'FontSize',8);set(gca, 'YScale', 'log');
+ylabel('Log(Principal components)')
+    
+[Prob1,ANOVATAB,STATS]=kruskalwallis([P1 H1])
+[Prob2,ANOVATAB,STATS]=kruskalwallis([P2 H2])
+[Prob3,ANOVATAB,STATS]=kruskalwallis([P3 H3])
+[Prob4,ANOVATAB,STATS]=kruskalwallis([P4 H4])
+[Prob5,ANOVATAB,STATS]=kruskalwallis([P5 H5])
+[Prob6,ANOVATAB,STATS]=kruskalwallis([P6 H6])
+[Prob7,ANOVATAB,STATS]=kruskalwallis([P7 H7])
+[Prob8,ANOVATAB,STATS]=kruskalwallis([P8 H8])
+[Prob9,ANOVATAB,STATS]=kruskalwallis([P9 H9])
+[Prob10,ANOVATAB,STATS]=kruskalwallis([P10 H10])
+[Prob11,ANOVATAB,STATS]=kruskalwallis([P11 H11])
+[Prob12,ANOVATAB,STATS]=kruskalwallis([P12 H12])
+
+Prob_Table=[Prob1 Prob2 Prob3 Prob4 Prob5 Prob6 Prob7 Prob8 Prob9 Prob10...
+           Prob11 Prob12]';
