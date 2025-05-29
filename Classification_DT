@@ -1,0 +1,46 @@
+
+clear all 
+clc
+close all
+tic
+
+gr=xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\dvcg paper\Final_pca_eig_BSPC_Paper_Rev.xlsx');
+group=gr(:,14);
+feat=gr(:,1:12);
+label=[repelem(1,897)';repelem(2,1994)'];
+class_prob=[repelem(0.3103,897)';repelem(0.6897,1994)'];
+cls_prob=[label class_prob];
+S.ClassNames=label;
+S.ClassProbs=class_prob;
+kfold=10;
+for ii=1:4
+    ns=[4 20 50 100];
+  fold   = cvpartition(group,'KFold',kfold);
+  Afold  = zeros(kfold,1); 
+  pred2  = []; 
+  ytest2 = []; 
+  for i = 1:kfold
+    % Call train & test data
+    trainIdx = fold.training(i); testIdx = fold.test(i);
+    xtrain   = feat(trainIdx,:); ytrain  = label(trainIdx);
+    xtest    = feat(testIdx,:);  ytest   = label(testIdx);
+    % Perform decision tree
+    Model = fitctree(xtrain,ytrain,'SplitCriterion','deviance','MinLeafSize',16, 'MaxNumSplits',ns(ii));
+    % Test 
+    pred = predict(Model,xtest); clear Model
+    % Accuracy
+    Afold(i) = sum(pred == ytest) / length(ytest);
+    % Store temporary
+    pred2  = [pred2(1:end); pred]; 
+    ytest2 = [ytest2(1:end); ytest];
+    [Xknn(:,i), Yknn(:,i), Tknn, AUCknn(i)]=perfcurve(ytest,pred,'1');
+  end
+  
+  confmat = confusionmat(ytest2,pred2);
+    Xx=Xknn(:);
+  Xk=sort(Xx);
+  Yy=Yknn(:);
+  Yk=sort(Yy);
+  AUC = trapz(Yk,Xk);
+  stats(ii,:) = [conf_stats_two_class(confmat) AUC];
+end
