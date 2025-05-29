@@ -1,0 +1,67 @@
+clear all 
+clc
+close all
+
+%---Input-------------------------------------------------------------
+% feat       : feature vector matrix (Instances x Features)
+% label      : label matrix (Instances x 1)
+% opts       : parameter settings 
+% opts.tf    : choose either hold-out / k-fold / leave-one-out
+% opts.ho    : ratio of testing data in hold-out validation
+% opts.kfold : number of folds in k-fold cross-validation
+
+
+%---Output-------------------------------------------------------------
+% ML      : machine learning model (It contains several results)
+% ML.acc  : classification accuracy 
+% ML.con  : confusion matrix
+% ML.t    : computational time (s)
+%----------------------------------------------------------------------
+gr=xlsread('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\dvcg paper\Final_pca_eig_BSPC_Paper_Rev.xlsx');
+group=gr(:,14);
+feat=gr(:,1:12);
+label=[repelem(1,897)';repelem(2,1994)'];
+class_prob=[repelem(0.3103,897)';repelem(0.6897,1994)'];
+cls_prob=[label class_prob];
+S.ClassNames=label;
+S.ClassProbs=class_prob;
+%% SVM Hyperparameter Tuning
+% Parameter settings
+kernel='polynomial';
+poly_degree=[2 3 4];
+color={'r','g','b'};
+count=1;
+for di=1:3
+    degree=poly_degree{di}
+          opts.kfold = 10;    
+        opts.k     = 10;     % k-value in KNN
+%         dist='cityblock';
+%         wet='squaredinverse';
+        
+% Classification         
+ ML = KNN_Khan_GKFold(feat,label,opts,group,dist,wet,S)
+         % Accuracy
+        accuracy0 = ML.acc; 
+% Confusion matrix
+        confmat0  = ML.CNFMAT;
+        stats(count,:) = conf_stats_two_class(confmat0);
+        AUC(count)=ML.AUC;
+        count=count+1;
+        Yk=ML.Yk;
+        
+        Xk=ML.Xk;
+        
+     
+       grid on
+       figure(di+10)
+       plot(Yk,Xk ,'color',color{we},'linewidth',2); hold on
+       xlabel('FPR', 'FontSize', 10, 'FontWeight', 'bold');
+       ylabel('TPR', 'FontSize', 10, 'FontWeight', 'bold');
+       legend('Equal','Inverse','Square inverse');
+       
+
+    end
+end
+
+AUC=AUC';
+Performance=[stats AUC];
