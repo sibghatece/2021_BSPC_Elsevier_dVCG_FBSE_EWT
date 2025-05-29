@@ -1,0 +1,115 @@
+clear all
+close all
+clc
+% The Resolution: 16 bit with 0.5 ?V/LSB (2000 A/D units per mV)
+% with 16 bit resolution over a range of ± 16.384 mV
+range=16.38;
+full_range_pp= 16.38*2;
+N=4000;
+t=(1:N)/1000;
+%HC_VCG_Seg234.mat
+ecg = load('C:\Users\Sibghatullah\Downloads\ptb my data to end mat\Segmented_HC_dVCG\HC_dVCG_Seg11.mat');
+
+
+% ecg = load('C:\Users\Sibghatullah\Documents\WROK\Covid Papers\dvcg paper\FBSE_EWT_HC_dVCG ALL\ModesHCALL_dVCG3.mat');
+vcg_data=ecg.VCG;
+
+Vx=vcg_data(1,1:4000);
+Vy=vcg_data(2,1:4000);
+Vz=vcg_data(3,1:4000);
+
+
+% Vx = -1 + 2.*(Vx - min(Vx))./(max(Vx) - min(Vx));
+% Vy = -1 + 2.*(Vy - min(Vy))./(max(Vy) - min(Vy));
+% Vz = -1 + 2.*(Vz - min(Vz))./(max(Vz) - min(Vz));
+% after review 1 plots
+Vx = -range + full_range_pp*(Vx - min(Vx))./(max(Vx) - min(Vx));
+Vy = -range + full_range_pp*(Vy - min(Vy))./(max(Vy) - min(Vy));
+Vz = -range + full_range_pp*(Vz - min(Vz))./(max(Vz) - min(Vz));
+
+figure(1)
+subplot(311)
+plot(t,Vx,'b')
+set(gca,'xticklabel',{[]})
+title('V_x')
+grid on
+%ylabel('Amplitude');
+subplot(312)
+plot(t,Vy,'b')
+title('V_y')
+
+grid on
+set(gca,'xticklabel',{[]})
+ylabel('Amplitude (mV)');
+subplot(313)
+plot(t,Vz,'b')
+title('V_z')
+grid on
+grid on
+xlabel('Time (sec)');
+
+
+% figure(2)
+%P wave plots
+
+% plotvcg(Vx,Vy,Vz,477,603,'b');
+% plotvcg(Vx,Vy,Vz,1258,1349,'b');
+% plotvcg(Vx,Vy,Vz,2009,2118,'b');
+% legend('P wave'); hold all
+% 
+% % QRS complex plot
+% plotvcg(Vx,Vy,Vz,638,790,'r');
+% plotvcg(Vx,Vy,Vz,1376,1499,'r');
+% plotvcg(Vx,Vy,Vz,2156,2278,'r');
+% % legend('QRS complex'); 
+% 
+% hold all
+% % T wave plot
+% plotvcg(Vx,Vy,Vz,799,1030,'g');
+% plotvcg(Vx,Vy,Vz,1594,1778,'g');
+% plotvcg(Vx,Vy,Vz,2360,2531,'g');
+% legend('P wave','QRS complex','T wave');hold all
+% 
+% xlabel('Vx')
+% ylabel('Vy')
+% zlabel('Vz')
+% 
+% 
+% 
+% 
+% for HC_VCG_Seg234.mat
+figure(2)
+% P wave plots
+
+plotvcg(Vx,Vy,Vz,1053,1132,'b');
+plotvcg(Vx,Vy,Vz,2025,2121,'b');
+plotvcg(Vx,Vy,Vz,2981,3089,'b');
+
+% QRS complex plot
+
+plotvcg(Vx,Vy,Vz,1210,1340,'r');
+plotvcg(Vx,Vy,Vz,2207,2326,'r');
+plotvcg(Vx,Vy,Vz,3158,3270,'r');
+
+% T wave plot
+plotvcg(Vx,Vy,Vz,1432,1635,'g');
+plotvcg(Vx,Vy,Vz,2378,2616,'g');
+plotvcg(Vx,Vy,Vz,3333,3580,'g');
+legend('P wave','QRS complex','T wave');hold all
+
+
+
+
+
+xlabel('V_x')
+ylabel('V_y')
+zlabel('V_z')
+% 
+% % set(gca, 'LineWidth',2,'Fontweight','Bold','TickDir','in','CameraPosition',[-2.62627 -5.74996 1.3714]);grid on;box on;
+% % string = ('Hui Yang - PSU Complex Systems Lab');
+% % ah = axes('units','normal','pos',[0 0 1 .02],'visible','off');
+% % set(ah,'xlim',[0 1],'ylim',[0 1])
+% % th = text(.6,.5,string,'fontsize',5);
+% 
+% 
+% 
